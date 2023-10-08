@@ -3,11 +3,11 @@
 
 #include <string>
 
-#include "control_msgs/msg/multi_dof_command.hpp"
 #include "controller_interface/controller_interface.hpp"
 #include "realtime_tools/realtime_buffer.h"
 #include "realtime_tools/realtime_publisher.h"
 #include "state_feedback_controller_parameters.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
 
 namespace state_feedback_controller {
 
@@ -18,14 +18,14 @@ class StateFeedbackController : public controller_interface::ControllerInterface
   controller_interface::CallbackReturn
   on_init() override;
 
+  controller_interface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State &previous_state) override;
+
   controller_interface::InterfaceConfiguration
   command_interface_configuration() const override;
 
   controller_interface::InterfaceConfiguration
   state_interface_configuration() const override;
-
-  controller_interface::CallbackReturn
-  on_configure(const rclcpp_lifecycle::State &previous_state) override;
 
   controller_interface::CallbackReturn
   on_activate(const rclcpp_lifecycle::State &previous_state) override;
@@ -36,7 +36,8 @@ class StateFeedbackController : public controller_interface::ControllerInterface
   controller_interface::return_type
   update(const rclcpp::Time &time, const rclcpp::Duration &preiod) override;
 
-  using TargetMsg = control_msgs::msg::MultiDOFCommand;
+  using TargetMsg = std_msgs::msg::Float64MultiArray;
+  using FeedbackGainMsg = std_msgs::msg::Float64MultiArray;
 
  protected:
   // parameters are defined in a yaml file,
@@ -46,6 +47,7 @@ class StateFeedbackController : public controller_interface::ControllerInterface
 
   // parameter
   realtime_tools::RealtimeBuffer<std::shared_ptr<TargetMsg>> target_;
+  realtime_tools::RealtimeBuffer<std::shared_ptr<FeedbackGainMsg>> state_feedback_gain_;
 
   // target subscriber
   rclcpp::Subscription<TargetMsg>::SharedPtr target_subscriber_ = nullptr;

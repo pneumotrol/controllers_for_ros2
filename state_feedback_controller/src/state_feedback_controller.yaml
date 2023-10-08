@@ -1,19 +1,18 @@
 state_feedback_controller:
-  joints: {
+  command_interfaces: {
     type: string_array,
     default_value: [],
-    description: "Specifies joints used by the controller.",
-    read_only: true,
-  }
-  command_interface_name: {
-    type: string,
-    default_value: "",
     description: "Name of the interface used for command.",
     read_only: true,
   }
-  state_interface_name: {
-    type: string,
-    default_value: "",
+  state_interfaces: {
+    type: string_array,
+    default_value: [],
     description: "Name of the interface used for state.",
     read_only: true,
+  }
+  state_feedback_gain: {
+    type: double_array,
+    default_value: [],
+    description: "State feedback gain matrix. Data must be stored as column major.",
   }
